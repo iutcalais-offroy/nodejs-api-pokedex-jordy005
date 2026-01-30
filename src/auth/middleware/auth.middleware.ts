@@ -1,19 +1,19 @@
-import { Router, Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken'
 
-export const authRouter = Router();
+//export const authRouter = Router();
 
 // Étendre le type Request pour ajouter userId
-declare global {
-    namespace Express {
-        interface Request {
-            user?: {
-                userId: number
-                email: string
-            }
-        }
-    }
-}
+//declare global {
+//    namespace Express {
+//        interface Request {
+//            user?: {
+//                userId: number
+//                email: string
+//            }
+//        }
+//    }
+//}
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 
@@ -24,7 +24,10 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         return res.status(401).json({ error: "Token manquant" });
     }
 
-    const token = authHeader && authHeader.split(' ')[1] // Format: "Bearer TOKEN"
+    const token = authHeader && authHeader.split(' ')[1]
+    if (!token) {
+        return res.status(401).json({ error: "Token manquant" });
+    }
 
     try {
         // 2. Vérifier et décoder le token
@@ -40,12 +43,8 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         }
 
         // 4. Passer au prochain middleware ou à la route
-        next()
+        return next()
     } catch (error) {
         return res.status(401).json({error: 'Token invalide ou expiré'})
     }
 }
-
-authRouter.get("/me", authenticateToken, (req: Request, res: Response) => {
-  return res.status(200).json({ user: req.user });
-});
