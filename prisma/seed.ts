@@ -4,7 +4,6 @@ import {join} from "path";
 import {prisma} from "../src/database";
 import {CardModel} from "../src/generated/prisma/models/Card";
 import {PokemonType} from "../src/generated/prisma/enums";
-import { connect } from "net";
 
 async function main() {
     console.log("🌱 Starting database seed...");
