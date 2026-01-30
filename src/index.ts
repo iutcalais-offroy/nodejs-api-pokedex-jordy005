@@ -4,6 +4,8 @@ import express from "express";
 import cors from "cors";
 import 'dotenv/config'
 import { authRouter } from "./auth/route/auth.route";
+import { authenticateToken } from "./auth/middleware/auth.middleware";
+
 
 // Create Express app
 export const app = express();
@@ -18,6 +20,9 @@ app.use(
 
 app.use(express.json());
 app.use("/api/auth", authRouter);
+app.get("/api/decks", authenticateToken, (req, res) => {
+  return res.status(200).json({ message: "OK", user: req.user });
+});
 
 
 // Serve static files (Socket.io test client)
