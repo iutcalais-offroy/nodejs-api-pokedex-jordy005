@@ -55,7 +55,6 @@ Version légère sans interface graphique.
 
 - **Bruno** (client API REST) - Recommandé pour tester l'API : [usebruno.com](https://www.usebruno.com/downloads)
 - **Éditeur de code** : [VS Code](https://code.visualstudio.com/) ou [WebStorm](https://www.jetbrains.com/webstorm/)
-
 ## Installation
 
 ### 1. Cloner le projet et installer les dépendances
