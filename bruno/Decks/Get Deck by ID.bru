@@ -14,14 +14,20 @@ auth:bearer {
   token: {{token}}
 }
 
+vars:pre-request {
+  baseUrl: http:
+  baseUrl: http://localhost:3001
+  deckId: 1
+}
+
 docs {
   Get a specific deck by its ID.
-
+  
   Requires authentication and deck ownership.
-
+  
   Variables needed:
   - deckId: The UUID of the deck to retrieve (get from Get My Decks response)
-
+  
   Returns:
   - 200: Deck details with cards
   - 401: Unauthorized

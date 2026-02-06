@@ -4,8 +4,8 @@ import express from "express";
 import cors from "cors";
 import 'dotenv/config'
 import { authRouter } from "./auth/route/auth.route";
-import { authenticateToken } from "./auth/middleware/auth.middleware";
 import { cardsRouter } from "./cards/route/cards.route";
+import { deckRouter } from "./decks/route/deck.route"
 
 
 
@@ -22,9 +22,7 @@ app.use(
 
 app.use(express.json());
 app.use("/api/auth", authRouter);
-app.get("/api/decks", authenticateToken, (req, res) => {
-  return res.status(200).json({ message: "OK", user: req.user });
-});
+app.use("/api/decks", deckRouter);
 app.use("/api/cards", cardsRouter);
 
 
