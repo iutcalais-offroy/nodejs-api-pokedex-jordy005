@@ -14,11 +14,15 @@ auth:bearer {
   token: {{token}}
 }
 
+vars:pre-request {
+  baseUrl: http://localhost:3001
+}
+
 docs {
   Get all available cards in the game.
-
+  
   Requires authentication.
-
+  
   Returns:
   - 200: List of all cards
   - 401: Unauthorized (missing or invalid token)
