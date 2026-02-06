@@ -10,7 +10,7 @@ export const deckController = {
       const result = await deckService.createDeck(userId, name, cards);
       if (!result.ok) return res.status(result.status).json({ error: result.message });
 
-      return res.status(result.status).json(result.deck);
+      return res.status(result.status).json(result.decks);
     } catch {
       return res.status(500).json({ error: "Erreur serveur" });
     }

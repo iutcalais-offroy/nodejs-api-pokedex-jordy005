@@ -43,7 +43,7 @@ export const deckService = {
     const check = await validateCardsOrThrow(cards);
     if (!check.ok) return check;
 
-    const deck = await prisma.$transaction(async (tx) => {
+    const decks = await prisma.$transaction(async (tx) => {
       const created = await tx.deck.create({ data: { userId, name: name.trim() } });
 
       await tx.deckCard.createMany({
@@ -56,7 +56,7 @@ export const deckService = {
       });
     });
 
-    return { ok: true as const, status: 201, deck };
+    return { ok: true as const, status: 201, decks };
   },
 
   async listMine(userId: number) {
