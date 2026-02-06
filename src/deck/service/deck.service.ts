@@ -8,7 +8,7 @@ const parseId = (value: string) => {
 
 const validateCardsOrThrow = async (cards: unknown) => {
   if (!Array.isArray(cards)) {
-    return { ok: false as const, status: 400, message: "cards doit être un tableau" };
+    return { ok: false as const, status: 400, message: "Cards doit être un tableau" };
   }
 
   if (cards.length !== 10) {

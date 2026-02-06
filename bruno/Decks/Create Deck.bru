@@ -21,6 +21,10 @@ body:json {
   }
 }
 
+vars:pre-request {
+  baseUrl: http://localhost:3001
+}
+
 script:post-response {
   if (res.status === 201) {
     bru.setVar("deckId", res.body.id);
@@ -29,13 +33,13 @@ script:post-response {
 
 docs {
   Create a new deck for the authenticated user.
-
+  
   Requires authentication.
-
+  
   Body:
   - name: string (required) - Name of the deck
   - cards: array of numbers (required) - Must contain exactly 10 card IDs
-
+  
   Returns:
   - 201: Deck created successfully
   - 400: Invalid input (must be exactly 10 valid card IDs)
