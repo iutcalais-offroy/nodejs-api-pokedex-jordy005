@@ -5,3 +5,4 @@ coverage
 .env
 commitlint.config.js
 tests
+src/generated/**
