@@ -6,9 +6,9 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "prisma generate && prisma migrate deploy && tsc",
+    "build": "tsc",
     "ts:check": "tsc --noEmit",
-    "start": "node dist/index.js",
+    "start": "prisma migrate deploy && node dist/index.js",
     "test": "vitest --coverage --run",
     "test:ui": "vitest --ui",
     "db:start": "docker compose up -d",
