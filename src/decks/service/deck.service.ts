@@ -1,5 +1,6 @@
 import { deckRepository } from '../repository/deck.repository'
 import { prisma } from '../../database'
+import type { Prisma } from '../../generated/prisma/client'
 
 const parseId = (value: string) => {
   const n = Number(value)
@@ -63,20 +64,22 @@ export const deckService = {
     const check = await validateCardsOrThrow(cards)
     if (!check.ok) return check
 
-    const decks = await prisma.$transaction(async (tx) => {
-      const created = await tx.deck.create({
-        data: { userId, name: name.trim() },
-      })
+    const decks = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const created = await tx.deck.create({
+          data: { userId, name: name.trim() },
+        })
 
-      await tx.deckCard.createMany({
-        data: check.cardIds.map((cardId) => ({ deckId: created.id, cardId })),
-      })
+        await tx.deckCard.createMany({
+          data: check.cardIds.map((cardId) => ({ deckId: created.id, cardId })),
+        })
 
-      return tx.deck.findUnique({
-        where: { id: created.id },
-        include: { deckCard: { include: { card: true } } },
-      })
-    })
+        return tx.deck.findUnique({
+          where: { id: created.id },
+          include: { deckCard: { include: { card: true } } },
+        })
+      },
+    )
 
     return { ok: true as const, status: 201, decks }
   },
@@ -131,26 +134,28 @@ export const deckService = {
       cardIds = check.cardIds
     }
 
-    const updated = await prisma.$transaction(async (tx) => {
-      if (name !== undefined) {
-        await tx.deck.update({
+    const updated = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        if (name !== undefined) {
+          await tx.deck.update({
+            where: { id: deckId },
+            data: { name: name.trim() },
+          })
+        }
+
+        if (cardIds) {
+          await tx.deckCard.deleteMany({ where: { deckId } })
+          await tx.deckCard.createMany({
+            data: cardIds.map((cardId) => ({ deckId, cardId })),
+          })
+        }
+
+        return tx.deck.findUnique({
           where: { id: deckId },
-          data: { name: name.trim() },
+          include: { deckCard: { include: { card: true } } },
         })
-      }
-
-      if (cardIds) {
-        await tx.deckCard.deleteMany({ where: { deckId } })
-        await tx.deckCard.createMany({
-          data: cardIds.map((cardId) => ({ deckId, cardId })),
-        })
-      }
-
-      return tx.deck.findUnique({
-        where: { id: deckId },
-        include: { deckCard: { include: { card: true } } },
-      })
-    })
+      },
+    )
 
     return { ok: true as const, status: 200, deck: updated }
   },
@@ -164,7 +169,7 @@ export const deckService = {
     if (!owned)
       return { ok: false as const, status: 404, message: 'Deck introuvable' }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.deckCard.deleteMany({ where: { deckId } })
       await tx.deck.delete({ where: { id: deckId } })
     })
