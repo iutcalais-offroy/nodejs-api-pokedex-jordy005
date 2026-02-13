@@ -21,6 +21,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       'prettier/prettier': 'error',
+      'no-console': 'warn',
     },
   },
 )

@@ -27,6 +27,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
+          JWT_SECRET: your-super-secret-jwt-key
           DATABASE_URL: postgresql://tcg_user:tcg_password@localhost:5433/tcg_database
 
       - name: Run linter

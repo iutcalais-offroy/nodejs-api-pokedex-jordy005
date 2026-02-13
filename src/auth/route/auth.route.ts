@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { Request, Response, Router } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'

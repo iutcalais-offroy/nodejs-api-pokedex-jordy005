@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import bcrypt from 'bcryptjs'
 import { readFileSync } from 'fs'
 import { join } from 'path'
