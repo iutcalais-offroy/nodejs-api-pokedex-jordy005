@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import { createServer } from 'http'
-import { env } from './env'
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
