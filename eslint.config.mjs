@@ -3,6 +3,10 @@ import tseslint from 'typescript-eslint'
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended'
 
 export default tseslint.config(
+  {
+    ignores: ['public/**', 'node_modules/**', 'dist/**', 'coverage/**'],
+  },
+
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   eslintPluginPrettier,
