@@ -12,8 +12,6 @@ import { deckRouter } from './decks/route/deck.route'
 // Create Express app
 export const app = express()
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
-
 // Middlewares
 app.use(
   cors({
@@ -21,6 +19,9 @@ app.use(
     credentials: true,
   }),
 )
+
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
