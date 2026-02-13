@@ -6,7 +6,7 @@ RUN npm install
 
 COPY . .
 
-ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public"
+ENV DATABASE_URL="postgresql://postgres:jYnCNlKUlOuhiUFsnstUksuuhNkWOVZD@postgres.railway.internal:5432/railway"
 
 RUN npx prisma generate
 
