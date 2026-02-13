@@ -20,11 +20,6 @@ app.use(
   }),
 )
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
 app.use(express.json())
 app.use('/api/auth', authRouter)
 app.use('/api/decks', deckRouter)
@@ -42,13 +37,13 @@ app.get('/api/health', (_req, res) => {
 if (require.main === module) {
   // Create HTTP server
   const httpServer = createServer(app)
-
+  const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
   // Start server
   try {
-    httpServer.listen(env.PORT, () => {
-      console.log(`\n🚀 Server is running on http://localhost:${env.PORT}`)
+    httpServer.listen(PORT, () => {
+      console.log(`\n🚀 Server is running on http://localhost:${PORT}`)
       console.log(
-        `🧪 Socket.io Test Client available at http://localhost:${env.PORT}`,
+        `🧪 Socket.io Test Client available at http://localhost:${PORT}`,
       )
     })
   } catch (error) {
