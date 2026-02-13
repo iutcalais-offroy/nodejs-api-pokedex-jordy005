@@ -1,100 +1,106 @@
-import bcrypt from "bcryptjs";
-import {readFileSync} from "fs";
-import {join} from "path";
-import {prisma} from "../src/database";
-import {CardModel} from "../src/generated/prisma/models/Card";
-import {PokemonType} from "../src/generated/prisma/enums";
+/* eslint-disable no-console */
+
+import bcrypt from 'bcryptjs'
+import { readFileSync } from 'fs'
+import { join } from 'path'
+import { prisma } from '../src/database'
+import { CardModel } from '../src/generated/prisma/models/Card'
+import { PokemonType } from '../src/generated/prisma/enums'
 
 async function main() {
-    console.log("🌱 Starting database seed...");
+  console.log('🌱 Starting database seed...')
 
-    await prisma.card.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.deckCard.deleteMany();
-    await prisma.deck.deleteMany();
+  await prisma.card.deleteMany()
+  await prisma.user.deleteMany()
+  await prisma.deckCard.deleteMany()
+  await prisma.deck.deleteMany()
 
-    const hashedPassword = await bcrypt.hash("password123", 10);
+  const hashedPassword = await bcrypt.hash('password123', 10)
 
-    await prisma.user.createMany({
-        data: [
-            {
-                username: "red",
-                email: "red@example.com",
-                password: hashedPassword,
-            },
-            {
-                username: "blue",
-                email: "blue@example.com",
-                password: hashedPassword,
-            },
-        ],
-    });
+  await prisma.user.createMany({
+    data: [
+      {
+        username: 'red',
+        email: 'red@example.com',
+        password: hashedPassword,
+      },
+      {
+        username: 'blue',
+        email: 'blue@example.com',
+        password: hashedPassword,
+      },
+    ],
+  })
 
-    const redUser = await prisma.user.findUnique({where: {email: "red@example.com"}});
-    const blueUser = await prisma.user.findUnique({where: {email: "blue@example.com"}});
+  const redUser = await prisma.user.findUnique({
+    where: { email: 'red@example.com' },
+  })
+  const blueUser = await prisma.user.findUnique({
+    where: { email: 'blue@example.com' },
+  })
 
-    if (!redUser || !blueUser) {
-        throw new Error("Failed to create users");
-    }
+  if (!redUser || !blueUser) {
+    throw new Error('Failed to create users')
+  }
 
-    console.log("✅ Created users:", redUser.username, blueUser.username);
+  console.log('✅ Created users:', redUser.username, blueUser.username)
 
-    const pokemonDataPath = join(__dirname, "data", "pokemon.json");
-    const pokemonJson = readFileSync(pokemonDataPath, "utf-8");
-    const pokemonData: CardModel[] = JSON.parse(pokemonJson);
+  const pokemonDataPath = join(__dirname, 'data', 'pokemon.json')
+  const pokemonJson = readFileSync(pokemonDataPath, 'utf-8')
+  const pokemonData: CardModel[] = JSON.parse(pokemonJson)
 
-    const createdCards = await Promise.all(
-        pokemonData.map((pokemon) =>
-            prisma.card.create({
-                data: {
-                    name: pokemon.name,
-                    hp: pokemon.hp,
-                    attack: pokemon.attack,
-                    type: PokemonType[pokemon.type as keyof typeof PokemonType],
-                    pokedexNumber: pokemon.pokedexNumber,
-                    imgUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.pokedexNumber}.png`,
-                },
-            })
-        )
-    );
+  const createdCards = await Promise.all(
+    pokemonData.map((pokemon) =>
+      prisma.card.create({
+        data: {
+          name: pokemon.name,
+          hp: pokemon.hp,
+          attack: pokemon.attack,
+          type: PokemonType[pokemon.type as keyof typeof PokemonType],
+          pokedexNumber: pokemon.pokedexNumber,
+          imgUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.pokedexNumber}.png`,
+        },
+      }),
+    ),
+  )
 
-    console.log(`✅ Created ${pokemonData.length} Pokemon cards`);
+  console.log(`✅ Created ${pokemonData.length} Pokemon cards`)
 
-    const randomCards = (count: number) => {
-        const random = [...createdCards].sort(() => 0.5 - Math.random());
-        return random.slice(0, count);
-    }
+  const randomCards = (count: number) => {
+    const random = [...createdCards].sort(() => 0.5 - Math.random())
+    return random.slice(0, count)
+  }
 
-    const createStarterDeck = async(user: { id: number }) => {
-        const deck = await prisma.deck.create({
-            data: {
-                name: "Starter Deck",
-                userId: user.id,
-            },
-    });
+  const createStarterDeck = async (user: { id: number }) => {
+    const deck = await prisma.deck.create({
+      data: {
+        name: 'Starter Deck',
+        userId: user.id,
+      },
+    })
 
-    const cards = randomCards(10);
+    const cards = randomCards(10)
 
     await prisma.deckCard.createMany({
-        data: cards.map((card) => ({
-            deckId: deck.id,
-            cardId: card.id,
-        })),
-    });
+      data: cards.map((card) => ({
+        deckId: deck.id,
+        cardId: card.id,
+      })),
+    })
 
-    return deck;
-};
-    await createStarterDeck(redUser);
-    await createStarterDeck(blueUser);
+    return deck
+  }
+  await createStarterDeck(redUser)
+  await createStarterDeck(blueUser)
 
-    console.log("\n🎉 Database seeding completed!");
+  console.log('\n🎉 Database seeding completed!')
 }
 
 main()
-    .catch((e) => {
-        console.error("❌ Error seeding database:", e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+  .catch((e) => {
+    console.error('❌ Error seeding database:', e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
