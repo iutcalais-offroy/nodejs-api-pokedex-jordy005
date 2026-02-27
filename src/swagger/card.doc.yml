@@ -1,0 +1,39 @@
+paths:
+  /cards:
+    get:
+      tags:
+        - Cards
+      summary: Liste toutes les cartes
+      description: |
+        Retourne toutes les cartes Pokémon disponibles, triées par numéro
+        Pokédex croissant. Aucune authentification requise.
+      responses:
+        '200':
+          description: Liste des cartes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+              example:
+                - id: 1
+                  name: Bulbizarre
+                  pokedexNumber: 1
+                  hp: 45
+                  attack: 49
+                  type: Grass
+                  imgUrl: https://example.com/bulbizarre.png
+                - id: 4
+                  name: Salamèche
+                  pokedexNumber: 4
+                  hp: 39
+                  attack: 52
+                  type: Fire
+                  imgUrl: https://example.com/salameche.png
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

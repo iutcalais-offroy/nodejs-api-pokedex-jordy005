@@ -1,0 +1,160 @@
+openapi: 3.0.3
+
+info:
+  title: Pokédex TCG API
+  description: |
+    API REST pour gérer des cartes Pokémon et des decks de jeu.
+
+    ## Authentification
+    Les routes protégées nécessitent un token JWT Bearer.  
+    Obtenez un token via `POST /api/auth/sign-in` puis cliquez sur **Authorize**.
+  version: 1.0.0
+
+servers:
+  - url: /api
+    description: Serveur local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Erreur serveur
+      required:
+        - error
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Red
+        email:
+          type: string
+          format: email
+          example: red@tcg.com
+      required:
+        - id
+        - name
+        - email
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Connexion réussie
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - message
+        - token
+        - user
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bulbizarre
+        pokedexNumber:
+          type: integer
+          example: 1
+        hp:
+          type: integer
+          example: 45
+        attack:
+          type: integer
+          example: 49
+        type:
+          type: string
+          enum:
+            - Grass
+            - Fire
+            - Water
+            - Lightning
+            - Psychic
+            - Fighting
+            - Darkness
+            - Metal
+            - Dragon
+            - Colorless
+          example: Grass
+        imgUrl:
+          type: string
+          format: uri
+          example: https://example.com/bulbizarre.png
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - pokedexNumber
+        - hp
+        - attack
+        - type
+        - imgUrl
+
+    DeckCard:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        deckId:
+          type: integer
+          example: 3
+        cardId:
+          type: integer
+          example: 1
+        card:
+          $ref: '#/components/schemas/Card'
+
+    Deck:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: Mon deck débutant
+        userId:
+          type: integer
+          example: 1
+        deckCard:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeckCard'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - userId
+        - deckCard

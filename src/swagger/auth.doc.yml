@@ -1,0 +1,131 @@
+paths:
+  /auth/sign-up:
+    post:
+      tags:
+        - Auth
+      summary: Inscription
+      description: Crée un nouveau compte utilisateur et retourne un JWT valable 7 jours.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - username
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: red@tcg.com
+                username:
+                  type: string
+                  example: Red
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '201':
+          description: Inscription réussie
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/AuthResponse'
+                  - type: object
+                    properties:
+                      message:
+                        example: Inscription réussie
+        '400':
+          description: Champs manquants ou données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                champs_manquants:
+                  summary: Champ absent
+                  value:
+                    error: Champs manquants
+                donnees_invalides:
+                  summary: Type incorrect
+                  value:
+                    error: Données invalides
+        '409':
+          description: Email déjà utilisé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Email déjà utilisé
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/sign-in:
+    post:
+      tags:
+        - Auth
+      summary: Connexion
+      description: Authentifie un utilisateur existant et retourne un JWT valable 7 jours.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: red@tcg.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Champs manquants ou données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                champs_manquants:
+                  summary: Champ absent
+                  value:
+                    error: Champs manquants
+                donnees_invalides:
+                  summary: Type incorrect
+                  value:
+                    error: Données invalides
+        '401':
+          description: Identifiants incorrects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: Email ou mot de passe incorrect
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
