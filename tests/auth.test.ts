@@ -21,7 +21,7 @@ describe("POST /api/auth/sign-up", () => {
     prismaMock.user.create.mockReset();
   });
 
-  it("201 → inscription réussie avec des données valides", async () => {
+  it("201 : inscription réussie avec des données valides", async () => {
     prismaMock.user.findUnique.mockResolvedValue(null);
     prismaMock.user.create.mockResolvedValue(
       makeUser({ id: 1, email: "red@tcg.com", username: "Red" }),
@@ -38,7 +38,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.user).toMatchObject({ email: "red@tcg.com", name: "Red" });
   });
 
-  it("400 → email manquant", async () => {
+  it("400 : email manquant", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       username: "Red",
       password: "password123",
@@ -47,7 +47,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("400 → username manquant", async () => {
+  it("400 : username manquant", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       email: "red@tcg.com",
       password: "password123",
@@ -56,7 +56,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("400 → password manquant", async () => {
+  it("400 : password manquant", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       email: "red@tcg.com",
       username: "Red",
@@ -65,7 +65,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("400 → email non-string (données invalides)", async () => {
+  it("400 : email non-string (données invalides)", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       email: 123,
       username: "Red",
@@ -75,7 +75,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Données invalides");
   });
 
-  it("400 → username non-string (données invalides)", async () => {
+  it("400 : username non-string", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       email: "red@tcg.com",
       username: 42,
@@ -85,7 +85,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Données invalides");
   });
 
-  it("400 → password non-string (données invalides)", async () => {
+  it("400 : password non-string", async () => {
     const res = await request(app).post("/api/auth/sign-up").send({
       email: "red@tcg.com",
       username: "Red",
@@ -95,7 +95,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Données invalides");
   });
 
-  it("409 → email déjà utilisé", async () => {
+  it("409 : email déjà utilisé", async () => {
     prismaMock.user.findUnique.mockResolvedValue(makeUser());
 
     const res = await request(app).post("/api/auth/sign-up").send({
@@ -108,7 +108,7 @@ describe("POST /api/auth/sign-up", () => {
     expect(res.body.error).toBe("Email déjà utilisé");
   });
 
-  it("500 → erreur serveur (prisma lève une erreur)", async () => {
+  it("500 : erreur serveur", async () => {
     prismaMock.user.findUnique.mockRejectedValue(new Error("DB down"));
 
     const res = await request(app).post("/api/auth/sign-up").send({
@@ -127,7 +127,7 @@ describe("POST /api/auth/sign-in", () => {
     prismaMock.user.findUnique.mockReset();
   });
 
-  it("200 → connexion réussie avec bonnes credentials", async () => {
+  it("200 : connexion réussie", async () => {
     const hashed = await bcrypt.hash("password123", 10);
     prismaMock.user.findUnique.mockResolvedValue(makeUser({ password: hashed }));
 
@@ -142,7 +142,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.user).toMatchObject({ email: "red@tcg.com" });
   });
 
-  it("400 → email manquant", async () => {
+  it("400 : email manquant", async () => {
     const res = await request(app).post("/api/auth/sign-in").send({
       password: "password123",
     });
@@ -150,7 +150,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("400 → password manquant", async () => {
+  it("400 : password manquant", async () => {
     const res = await request(app).post("/api/auth/sign-in").send({
       email: "red@tcg.com",
     });
@@ -158,7 +158,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("400 → email non-string (données invalides)", async () => {
+  it("400 : email non-string", async () => {
     const res = await request(app).post("/api/auth/sign-in").send({
       email: 42,
       password: "password123",
@@ -167,7 +167,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Données invalides");
   });
 
-  it("400 → password non-string (données invalides)", async () => {
+  it("400 : password non-string", async () => {
     const res = await request(app).post("/api/auth/sign-in").send({
       email: "red@tcg.com",
       password: false,
@@ -176,7 +176,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Champs manquants");
   });
 
-  it("401 → utilisateur introuvable", async () => {
+  it("401 : utilisateur introuvable", async () => {
     prismaMock.user.findUnique.mockResolvedValue(null);
 
     const res = await request(app).post("/api/auth/sign-in").send({
@@ -188,7 +188,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Email ou mot de passe incorrect");
   });
 
-  it("401 → mauvais mot de passe", async () => {
+  it("401 : mauvais mot de passe", async () => {
     const hashed = await bcrypt.hash("correct-password", 10);
     prismaMock.user.findUnique.mockResolvedValue(makeUser({ password: hashed }));
 
@@ -201,7 +201,7 @@ describe("POST /api/auth/sign-in", () => {
     expect(res.body.error).toBe("Email ou mot de passe incorrect");
   });
 
-  it("500 → erreur serveur (prisma lève une erreur)", async () => {
+  it("500 : erreur serveur", async () => {
     prismaMock.user.findUnique.mockRejectedValue(new Error("DB down"));
 
     const res = await request(app).post("/api/auth/sign-in").send({

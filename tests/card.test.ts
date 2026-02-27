@@ -21,7 +21,7 @@ describe("GET /api/cards", () => {
     prismaMock.card.findMany.mockReset();
   });
 
-  it("200 → retourne la liste de toutes les cartes", async () => {
+  it("200 : retourne la liste de toutes les cartes", async () => {
     const cards = [makeCard(1), makeCard(2), makeCard(3)];
     prismaMock.card.findMany.mockResolvedValue(cards);
 
@@ -32,7 +32,7 @@ describe("GET /api/cards", () => {
     expect(res.body[0]).toMatchObject({ id: 1, name: "Card 1" });
   });
 
-  it("200 → retourne un tableau vide si aucune carte", async () => {
+  it("200 : retourne un tableau vide si aucune carte", async () => {
     prismaMock.card.findMany.mockResolvedValue([]);
 
     const res = await request(app).get("/api/cards");
@@ -41,7 +41,7 @@ describe("GET /api/cards", () => {
     expect(res.body).toEqual([]);
   });
 
-  it("200 → les cartes sont triées par pokedexNumber (asc)", async () => {
+  it("200 : les cartes sont triées par pokedexNumber", async () => {
     const cards = [makeCard(1), makeCard(2), makeCard(3)];
     prismaMock.card.findMany.mockResolvedValue(cards);
 
@@ -52,7 +52,7 @@ describe("GET /api/cards", () => {
     });
   });
 
-  it("500 → erreur serveur si prisma lève une erreur", async () => {
+  it("500 : erreur serveur si prisma lève une erreur", async () => {
     prismaMock.card.findMany.mockRejectedValue(new Error("DB down"));
 
     const res = await request(app).get("/api/cards");

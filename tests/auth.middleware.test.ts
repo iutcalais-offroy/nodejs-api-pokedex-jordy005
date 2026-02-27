@@ -28,7 +28,7 @@ const mockRes = () => {
 };
 
 describe("authenticateToken middleware", () => {
-  it("401 → pas d'en-tête Authorization", () => {
+  it("401 : pas d'en-tête Authorization", () => {
     const req = mockReq({ headers: {} });
     const res = mockRes();
     const next = vi.fn();
@@ -40,7 +40,7 @@ describe("authenticateToken middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("401 → Authorization present mais ne commence pas par 'Bearer '", () => {
+  it("401 : Authorization present mais ne commence pas par 'Bearer '", () => {
     const req = mockReq({
       headers: { authorization: "Basic abc123" },
     });
@@ -54,7 +54,7 @@ describe("authenticateToken middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("401 → 'Bearer ' sans token apres (chaine vide apres split)", () => {
+  it("401 : 'Bearer ' sans token", () => {
     const req = mockReq({
       headers: { authorization: "Bearer " },
     });
@@ -68,7 +68,7 @@ describe("authenticateToken middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("401 → token invalide / malformate", () => {
+  it("401 : token invalide ", () => {
     const req = mockReq({
       headers: { authorization: "Bearer invalid.token.here" },
     });
@@ -82,7 +82,7 @@ describe("authenticateToken middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("401 → token signe avec un mauvais secret", () => {
+  it("401 : token signe avec un mauvais secret", () => {
     const badToken = jwt.sign({ userId: 1, email: "x@y.com" }, "wrong-secret");
     const req = mockReq({
       headers: { authorization: `Bearer ${badToken}` },
@@ -97,7 +97,7 @@ describe("authenticateToken middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("401 → token expire", () => {
+  it("401 : token expire", () => {
     const expiredToken = jwt.sign(
       { userId: 1, email: "red@tcg.com" },
       JWT_SECRET,
