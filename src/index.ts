@@ -7,9 +7,12 @@ import 'dotenv/config'
 import { authRouter } from './auth/route/auth.route'
 import { cardsRouter } from './cards/route/cards.route'
 import { deckRouter } from './decks/route/deck.route'
+import { setupSwagger } from './swagger'
 
 // Create Express app
 export const app = express()
+
+setupSwagger(app)
 
 // Middlewares
 app.use(
