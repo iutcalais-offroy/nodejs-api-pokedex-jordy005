@@ -5,7 +5,7 @@ export const deckController = {
   async create(req: Request, res: Response) {
     try {
       const userId = req.user!.userId
-      const { name, cards } = req.body ?? {}
+      const { name, cards } = req.body
 
       const result = await deckService.createDeck(userId, name, cards)
       if (!result.ok)
@@ -43,7 +43,7 @@ export const deckController = {
   async update(req: Request, res: Response) {
     try {
       const userId = req.user!.userId
-      const { name, cards } = req.body ?? {}
+      const { name, cards } = req.body
 
       const result = await deckService.update(
         userId,

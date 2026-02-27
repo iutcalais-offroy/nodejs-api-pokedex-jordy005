@@ -12,3 +12,5 @@ beforeEach(() => {
 })
 
 export const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>
+
+process.env.JWT_SECRET = "test-secret";
