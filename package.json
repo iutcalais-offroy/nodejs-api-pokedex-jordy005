@@ -11,6 +11,7 @@
     "start": "prisma migrate deploy && node dist/index.js",
     "test": "vitest --coverage --run",
     "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage --run",
     "db:start": "docker compose up -d",
     "db:stop": "docker compose down",
     "db:generate": "prisma generate",
