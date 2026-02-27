@@ -1,20 +1,23 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
-//export const authRouter = Router();
-
-// Étendre le type Request pour ajouter userId
-//declare global {
-//    namespace Express {
-//        interface Request {
-//            user?: {
-//                userId: number
-//                email: string
-//            }
-//        }
-//    }
-//}
-
+/**
+ * Middleware d'authentification JWT.
+ *
+ * Vérifie la présence et la validité du token Bearer dans l'en-tête
+ * `Authorization`. Si le token est valide, les informations de l'utilisateur
+ * sont attachées à `req.user` avant de passer au middleware suivant.
+ *
+ * @param {Request}      req  - Requête Express. Doit contenir un en-tête
+ *                             `Authorization: Bearer <token>`.
+ * @param {Response}     res  - Réponse Express.
+ * @param {NextFunction} next - Fonction de passage au middleware suivant.
+ *
+ * @returns {void}
+ *
+ * @throws {401} `Token manquant`         - Si l'en-tête `Authorization` est absent ou ne commence pas par `Bearer `.
+ * @throws {401} `Token invalide ou expiré` - Si le token est signé avec un mauvais secret ou expiré.
+ */
 export const authenticateToken = (
   req: Request,
   res: Response,
