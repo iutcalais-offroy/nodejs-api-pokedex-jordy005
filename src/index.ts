@@ -3,11 +3,13 @@
 import { createServer } from 'http'
 import express from 'express'
 import cors from 'cors'
+import { Server } from 'socket.io'
 import 'dotenv/config'
 import { authRouter } from './auth/route/auth.route'
 import { cardsRouter } from './cards/route/cards.route'
 import { deckRouter } from './decks/route/deck.route'
 import { setupSwagger } from './swagger'
+import { socketAuthMiddleware } from './socket/socket.middleware'
 
 // Create Express app
 export const app = express()
@@ -39,13 +41,37 @@ app.get('/api/health', (_req, res) => {
 if (require.main === module) {
   // Create HTTP server
   const httpServer = createServer(app)
-  const PORT = process.env.PORT ? Number(process.env.PORT) : 3000
+
+  const io = new Server(httpServer, {
+    cors: {
+      origin: true,
+      credentials: true,
+    },
+  })
+
+  // Authentification JWT sur toutes les connexions WebSocket
+  io.use(socketAuthMiddleware)
+
+  io.on('connection', (socket) => {
+    console.log(
+      `✅ Socket connecté — userId: ${socket.data.userId} (${socket.data.email})`,
+    )
+
+    socket.on('disconnect', () => {
+      console.log(`❌ Socket déconnecté — userId: ${socket.data.userId}`)
+    })
+  })
+
+  const PORT = process.env.PORT ? Number(process.env.PORT) : 3002
   // Start server
   try {
     httpServer.listen(PORT, () => {
       console.log(`\n🚀 Server is running on http://localhost:${PORT}`)
       console.log(
-        `🧪 Socket.io Test Client available at http://localhost:${PORT}`,
+        `\n🧪 Socket.io Test Client available at http://localhost:${PORT}`,
+      )
+      console.log(
+        `\n📖 Swagger UI available at http://localhost:${PORT}/api-docs`,
       )
     })
   } catch (error) {
